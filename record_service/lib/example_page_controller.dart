@@ -139,7 +139,7 @@ class ExamplePageController {
   }
 
   // handler
-  void _onReceiveTaskData(dynamic data) {
+  void _onReceiveTaskData(Object data) {
     // handle task data
   }
 

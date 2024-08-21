@@ -12,22 +12,22 @@ class ExamplePageController {
 
   final ValueNotifier<String?> platformVersionNotifier = ValueNotifier(null);
 
-  // public
-  Future<void> requestPermissions() async {
+  // private
+  Future<void> _requestPlatformPermissions() async {
+    final NotificationPermission notificationPermission =
+        await FlutterForegroundTask.checkNotificationPermission();
+    if (notificationPermission != NotificationPermission.granted) {
+      await FlutterForegroundTask.requestNotificationPermission();
+    }
+
     if (Platform.isAndroid) {
       if (!await FlutterForegroundTask.isIgnoringBatteryOptimizations) {
         await FlutterForegroundTask.requestIgnoreBatteryOptimization();
       }
-
-      final NotificationPermission notificationPermission =
-          await FlutterForegroundTask.checkNotificationPermission();
-      if (notificationPermission != NotificationPermission.granted) {
-        await FlutterForegroundTask.requestNotificationPermission();
-      }
     }
   }
 
-  Future<void> initService() async {
+  Future<void> _initService() async {
     FlutterForegroundTask.init(
       androidNotificationOptions: AndroidNotificationOptions(
         channelId: 'internal_plugin_service',
@@ -48,7 +48,7 @@ class ExamplePageController {
     );
   }
 
-  Future<void> startService() async {
+  Future<void> _startService() async {
     final ServiceRequestResult result =
         await FlutterForegroundTask.startService(
       notificationTitle: 'Internal Plugin Service',
@@ -62,7 +62,7 @@ class ExamplePageController {
     }
   }
 
-  Future<void> stopService() async {
+  Future<void> _stopService() async {
     final ServiceRequestResult result =
         await FlutterForegroundTask.stopService();
 
@@ -72,8 +72,7 @@ class ExamplePageController {
     }
   }
 
-  // private
-  void _onReceiveTaskData(dynamic data) {
+  void _onReceiveTaskData(Object data) {
     if (data is String) {
       platformVersionNotifier.value = data;
     }
@@ -87,10 +86,10 @@ class ExamplePageController {
       errorMessage = e.toString();
     }
 
-    // Logger
+    // print error to console.
     dev.log('$errorMessage\n${s.toString()}');
 
-    // Show snackbar
+    // show error to user.
     final State? state = _state;
     if (state != null && state.mounted) {
       final SnackBar snackBar = SnackBar(content: Text(errorMessage));
@@ -105,13 +104,14 @@ class ExamplePageController {
 
     try {
       // check permissions -> if granted -> start service
-      requestPermissions().then((_) async {
-        final bool isRunningService =
-            await FlutterForegroundTask.isRunningService;
-        if (!isRunningService) {
-          await initService();
-          startService();
+      _requestPlatformPermissions().then((_) async {
+        // already started
+        if (await FlutterForegroundTask.isRunningService) {
+          return;
         }
+
+        await _initService();
+        _startService();
       });
     } catch (e, s) {
       _handleError(e, s);

@@ -8,7 +8,7 @@ The plugins used in the project are as follows:
 
 ```yaml
 dependencies:
-  flutter_foreground_task: ^8.2.0
+  flutter_foreground_task: ^8.3.1
   fl_location: ^4.0.0
 ```
 
@@ -24,12 +24,13 @@ The settings for each platform are as follows:
     <!-- Add permissions -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
 
     <application>
-        <!-- Add service  -->
+        <!-- Add service -->
         <service 
             android:name="com.pravera.flutter_foreground_task.service.ForegroundService"
             android:foregroundServiceType="location" 
@@ -59,6 +60,9 @@ The settings for each platform are as follows:
     
     // add code
     SwiftFlutterForegroundTaskPlugin.setPluginRegistrantCallback(registerPlugins)
+    if #available(iOS 10.0, *) {
+      UNUserNotificationCenter.current().delegate = self as? UNUserNotificationCenterDelegate
+    }
     
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
