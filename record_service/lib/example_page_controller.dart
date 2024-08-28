@@ -104,8 +104,8 @@ class ExamplePageController {
         showNotification: true,
         playSound: false,
       ),
-      foregroundTaskOptions: const ForegroundTaskOptions(
-        isOnceEvent: true,
+      foregroundTaskOptions: ForegroundTaskOptions(
+        eventAction: ForegroundTaskEventAction.nothing(),
         autoRunOnBoot: false,
         autoRunOnMyPackageReplaced: false,
         allowWakeLock: true,
@@ -117,6 +117,7 @@ class ExamplePageController {
   Future<void> _startService() async {
     final ServiceRequestResult result =
         await FlutterForegroundTask.startService(
+      serviceId: 300,
       notificationTitle: 'Record Service',
       notificationText: '',
       callback: startRecordService,

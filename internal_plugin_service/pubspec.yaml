@@ -34,7 +34,7 @@ dependencies:
   internal_plugin:
     path: plugins/internal_plugin
 
-  flutter_foreground_task: ^8.3.1
+  flutter_foreground_task: ^8.6.0
 
 dev_dependencies:
   flutter_test:

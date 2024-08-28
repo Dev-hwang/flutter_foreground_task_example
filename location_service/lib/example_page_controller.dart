@@ -51,8 +51,8 @@ class ExamplePageController {
         showNotification: false,
         playSound: false,
       ),
-      foregroundTaskOptions: const ForegroundTaskOptions(
-        isOnceEvent: true,
+      foregroundTaskOptions: ForegroundTaskOptions(
+        eventAction: ForegroundTaskEventAction.nothing(),
         autoRunOnBoot: true,
         autoRunOnMyPackageReplaced: true,
         allowWakeLock: true,
@@ -64,6 +64,7 @@ class ExamplePageController {
   Future<void> _startService() async {
     final ServiceRequestResult result =
         await FlutterForegroundTask.startService(
+      serviceId: 200,
       notificationTitle: 'Location Service',
       notificationText: '',
       callback: startLocationService,

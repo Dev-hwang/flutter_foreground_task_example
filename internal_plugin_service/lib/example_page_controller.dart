@@ -39,7 +39,8 @@ class ExamplePageController {
         showNotification: false,
         playSound: false,
       ),
-      foregroundTaskOptions: const ForegroundTaskOptions(
+      foregroundTaskOptions: ForegroundTaskOptions(
+        eventAction: ForegroundTaskEventAction.repeat(5000),
         autoRunOnBoot: true,
         autoRunOnMyPackageReplaced: true,
         allowWakeLock: true,
@@ -51,6 +52,7 @@ class ExamplePageController {
   Future<void> _startService() async {
     final ServiceRequestResult result =
         await FlutterForegroundTask.startService(
+      serviceId: 100,
       notificationTitle: 'Internal Plugin Service',
       notificationText: '',
       callback: startInternalPluginService,
