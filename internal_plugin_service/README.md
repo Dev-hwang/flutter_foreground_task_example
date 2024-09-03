@@ -28,7 +28,7 @@ And add `flutter_foreground_task` plugin. If you want to know more about `flutte
 
 ```yaml
 dependencies:
-  flutter_foreground_task: ^8.6.0
+  flutter_foreground_task: ^8.8.0
 ```
 
 Run example!!

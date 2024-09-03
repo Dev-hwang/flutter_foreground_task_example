@@ -8,8 +8,8 @@ The plugins used in the project are as follows:
 
 ```yaml
 dependencies:
-  flutter_foreground_task: ^8.6.0
-  fl_location: ^4.0.0
+  flutter_foreground_task: ^8.8.0
+  fl_location: ^4.1.0
 ```
 
 The settings for each platform are as follows:
