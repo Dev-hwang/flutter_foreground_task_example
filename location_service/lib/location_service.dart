@@ -13,7 +13,7 @@ class LocationServiceHandler extends TaskHandler {
   StreamSubscription<Location>? _streamSubscription;
 
   @override
-  void onStart(DateTime timestamp) {
+  void onStart(DateTime timestamp, TaskStarter starter) {
     _streamSubscription = FlLocation.getLocationStream().listen((location) {
       final double lat = location.latitude;
       final double lon = location.longitude;

@@ -8,7 +8,7 @@ The plugins used in the project are as follows:
 
 ```yaml
 dependencies:
-  flutter_foreground_task: ^8.8.0
+  flutter_foreground_task: ^8.9.0
   fl_location: ^4.1.0
 ```
 
@@ -83,6 +83,10 @@ func registerPlugins(registry: FlutterPluginRegistry) {
 <string>Used to collect location data in the background.</string>
 <key>NSLocationAlwaysUsageDescription</key>
 <string>Used to collect location data in the background.</string>
+<key>BGTaskSchedulerPermittedIdentifiers</key>
+<array>
+    <string>com.pravera.flutter_foreground_task.refresh</string>
+</array>
 <key>UIBackgroundModes</key>
 <array>
     <string>fetch</string>

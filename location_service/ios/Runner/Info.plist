@@ -51,6 +51,10 @@
     <string>Used to collect location data in the background.</string>
     <key>NSLocationAlwaysUsageDescription</key>
     <string>Used to collect location data in the background.</string>
+    <key>BGTaskSchedulerPermittedIdentifiers</key>
+    <array>
+        <string>com.pravera.flutter_foreground_task.refresh</string>
+    </array>
     <key>UIBackgroundModes</key>
     <array>
         <string>fetch</string>

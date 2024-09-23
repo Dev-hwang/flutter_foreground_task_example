@@ -10,7 +10,7 @@ class InternalPluginServiceHandler extends TaskHandler {
   int _count = 0;
 
   @override
-  void onStart(DateTime timestamp) {
+  void onStart(DateTime timestamp, TaskStarter starter) {
     // some code
   }
 

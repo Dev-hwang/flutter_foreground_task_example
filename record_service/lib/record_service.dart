@@ -17,7 +17,7 @@ class RecordServiceHandler extends TaskHandler {
   final AudioRecorder _record = AudioRecorder();
 
   @override
-  void onStart(DateTime timestamp) {
+  void onStart(DateTime timestamp, TaskStarter starter) {
     _startRecord();
   }
 
