@@ -13,7 +13,7 @@ class LocationServiceHandler extends TaskHandler {
   StreamSubscription<Location>? _streamSubscription;
 
   @override
-  void onStart(DateTime timestamp, TaskStarter starter) {
+  Future<void> onStart(DateTime timestamp, TaskStarter starter) async {
     _streamSubscription = FlLocation.getLocationStream().listen((location) {
       final double lat = location.latitude;
       final double lon = location.longitude;
@@ -34,7 +34,7 @@ class LocationServiceHandler extends TaskHandler {
   }
 
   @override
-  void onDestroy(DateTime timestamp) {
+  Future<void> onDestroy(DateTime timestamp) async {
     _streamSubscription?.cancel();
     _streamSubscription = null;
   }

@@ -17,8 +17,8 @@ class RecordServiceHandler extends TaskHandler {
   final AudioRecorder _record = AudioRecorder();
 
   @override
-  void onStart(DateTime timestamp, TaskStarter starter) {
-    _startRecord();
+  Future<void> onStart(DateTime timestamp, TaskStarter starter) async {
+    await _startRecord();
   }
 
   @override
@@ -27,8 +27,8 @@ class RecordServiceHandler extends TaskHandler {
   }
 
   @override
-  void onDestroy(DateTime timestamp) {
-    _stopRecord();
+  Future<void> onDestroy(DateTime timestamp) async {
+    await _stopRecord();
   }
 
   @override

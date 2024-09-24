@@ -10,7 +10,7 @@ class InternalPluginServiceHandler extends TaskHandler {
   int _count = 0;
 
   @override
-  void onStart(DateTime timestamp, TaskStarter starter) {
+  Future<void> onStart(DateTime timestamp, TaskStarter starter) async {
     // some code
   }
 
@@ -28,7 +28,7 @@ class InternalPluginServiceHandler extends TaskHandler {
   }
 
   @override
-  void onDestroy(DateTime timestamp) {
+  Future<void> onDestroy(DateTime timestamp) async {
     // some code
   }
 }
