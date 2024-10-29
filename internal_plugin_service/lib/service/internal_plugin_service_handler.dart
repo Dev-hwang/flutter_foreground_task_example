@@ -20,7 +20,7 @@ class InternalPluginServiceHandler extends TaskHandler {
     _count++;
 
     // Update notification content.
-    final String message = '$platformVersion: ($_count)';
+    final String message = '$platformVersion ($_count)';
     FlutterForegroundTask.updateService(notificationText: message);
 
     // Send data to main isolate.
