@@ -26,16 +26,19 @@ class ExamplePageController {
       if (!await FlutterForegroundTask.isIgnoringBatteryOptimizations) {
         await FlutterForegroundTask.requestIgnoreBatteryOptimization();
       }
+
+      if (!await FlutterForegroundTask.canScheduleExactAlarms) {
+        await FlutterForegroundTask.openAlarmsAndRemindersSettings();
+      }
     }
   }
 
   Future<void> _requestLocationPermission() async {
     final LocationPermission locationPermission =
         await FlLocation.requestLocationPermission();
-    if (locationPermission == LocationPermission.denied ||
-        locationPermission == LocationPermission.deniedForever) {
+    if (locationPermission != LocationPermission.always) {
       throw Exception(
-          'To start location service, you must grant location permission.');
+          'To start location service, you must always grant location permission.');
     }
   }
 
@@ -44,8 +47,6 @@ class ExamplePageController {
       androidNotificationOptions: AndroidNotificationOptions(
         channelId: 'location_service',
         channelName: 'Location Service',
-        channelImportance: NotificationChannelImportance.LOW,
-        priority: NotificationPriority.LOW,
       ),
       iosNotificationOptions: const IOSNotificationOptions(
         showNotification: false,

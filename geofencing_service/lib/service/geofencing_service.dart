@@ -64,8 +64,6 @@ class GeofencingService {
       androidNotificationOptions: AndroidNotificationOptions(
         channelId: 'geofencing_service',
         channelName: 'Geofencing Service',
-        channelImportance: NotificationChannelImportance.LOW,
-        priority: NotificationPriority.LOW,
       ),
       iosNotificationOptions: const IOSNotificationOptions(
         showNotification: false,

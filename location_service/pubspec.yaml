@@ -31,8 +31,8 @@ dependencies:
   flutter:
     sdk: flutter
 
-  flutter_foreground_task: ^8.10.4
-  fl_location: ^4.1.0
+  flutter_foreground_task: ^8.12.0
+  fl_location: ^4.3.0
 
 dev_dependencies:
   flutter_test:

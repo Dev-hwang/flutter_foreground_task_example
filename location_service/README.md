@@ -8,8 +8,8 @@ The plugins used in the project are as follows:
 
 ```yaml
 dependencies:
-  flutter_foreground_task: ^8.10.4
-  fl_location: ^4.1.0
+  flutter_foreground_task: ^8.12.0
+  fl_location: ^4.3.0
 ```
 
 The settings for each platform are as follows:
@@ -19,7 +19,6 @@ The settings for each platform are as follows:
 * AndroidManifest.xml
 
 ```xml
-
 <manifest>
     <!-- Add permissions -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
@@ -28,6 +27,9 @@ The settings for each platform are as follows:
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
 
     <application>
         <!-- Add service -->
@@ -50,27 +52,24 @@ The settings for each platform are as follows:
 * AppDelegate.swift
 
 ```swift
-@UIApplicationMain
+@main
 @objc class AppDelegate: FlutterAppDelegate {
   override func application(
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
     GeneratedPluginRegistrant.register(with: self)
-    
-    // add code
-    SwiftFlutterForegroundTaskPlugin.setPluginRegistrantCallback(registerPlugins)
+
+    // this
+    SwiftFlutterForegroundTaskPlugin.setPluginRegistrantCallback { registry in
+      GeneratedPluginRegistrant.register(with: registry)
+    }
     if #available(iOS 10.0, *) {
       UNUserNotificationCenter.current().delegate = self as? UNUserNotificationCenterDelegate
     }
-    
+
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
-}
-
-// add func
-func registerPlugins(registry: FlutterPluginRegistry) {
-  GeneratedPluginRegistrant.register(with: registry)
 }
 ```
 

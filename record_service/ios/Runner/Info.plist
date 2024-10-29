@@ -49,8 +49,8 @@
     <string>Used to record voice.</string>
     <key>UIBackgroundModes</key>
     <array>
-    	<string>audio</string>
         <string>fetch</string>
+    	<string>audio</string>
     </array>
 </dict>
 </plist>

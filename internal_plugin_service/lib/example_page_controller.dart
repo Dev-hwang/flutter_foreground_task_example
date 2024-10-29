@@ -24,6 +24,10 @@ class ExamplePageController {
       if (!await FlutterForegroundTask.isIgnoringBatteryOptimizations) {
         await FlutterForegroundTask.requestIgnoreBatteryOptimization();
       }
+
+      if (!await FlutterForegroundTask.canScheduleExactAlarms) {
+        await FlutterForegroundTask.openAlarmsAndRemindersSettings();
+      }
     }
   }
 
@@ -32,8 +36,6 @@ class ExamplePageController {
       androidNotificationOptions: AndroidNotificationOptions(
         channelId: 'internal_plugin_service',
         channelName: 'Internal Plugin Service',
-        channelImportance: NotificationChannelImportance.LOW,
-        priority: NotificationPriority.LOW,
       ),
       iosNotificationOptions: const IOSNotificationOptions(
         showNotification: false,

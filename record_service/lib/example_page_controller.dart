@@ -97,8 +97,6 @@ class ExamplePageController {
       androidNotificationOptions: AndroidNotificationOptions(
         channelId: 'record_service',
         channelName: 'Record Service',
-        channelImportance: NotificationChannelImportance.LOW,
-        priority: NotificationPriority.LOW,
       ),
       iosNotificationOptions: const IOSNotificationOptions(
         showNotification: true,
