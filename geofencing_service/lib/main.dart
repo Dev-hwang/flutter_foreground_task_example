@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 
 import 'config/routes.dart';
+import 'service/geofencing_service.dart';
 import 'ui/main_page.dart';
 
 void main() {
-  // Initialize port for communication between TaskHandler and UI.
-  FlutterForegroundTask.initCommunicationPort();
+  GeofencingService.instance.init();
   runApp(const ExampleApp());
 }
 

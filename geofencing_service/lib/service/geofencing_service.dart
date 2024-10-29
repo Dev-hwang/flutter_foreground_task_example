@@ -58,8 +58,8 @@ class GeofencingService {
   }
 
   void init() {
+    FlutterForegroundTask.initCommunicationPort();
     FlutterForegroundTask.addTaskDataCallback(_onReceiveTaskData);
-
     FlutterForegroundTask.init(
       androidNotificationOptions: AndroidNotificationOptions(
         channelId: 'geofencing_service',
@@ -129,13 +129,13 @@ class GeofencingService {
     }
   }
 
-  void addCallback(GeofenceStateChanged callback) {
+  void addGeofenceStateChangedCallback(GeofenceStateChanged callback) {
     if (!_callbacks.contains(callback)) {
       _callbacks.add(callback);
     }
   }
 
-  void removeCallback(GeofenceStateChanged callback) {
+  void removeGeofenceStateChangedCallback(GeofenceStateChanged callback) {
     _callbacks.remove(callback);
   }
 

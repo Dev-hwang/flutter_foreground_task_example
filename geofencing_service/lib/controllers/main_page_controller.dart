@@ -57,14 +57,18 @@ class MainPageController extends BaseController with ErrorHandlerMixin {
   @override
   void attach(State state) {
     super.attach(state);
-    GeofencingService.instance.init();
-    GeofencingService.instance.addCallback(_onGeofenceStateChanged);
-    _startGeofencingService();
+    GeofencingService.instance
+        .addGeofenceStateChangedCallback(_onGeofenceStateChanged);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _startGeofencingService();
+    });
   }
 
   @override
   void dispose() {
-    GeofencingService.instance.removeCallback(_onGeofenceStateChanged);
+    GeofencingService.instance
+        .removeGeofenceStateChangedCallback(_onGeofenceStateChanged);
     geofenceStateListenable.dispose();
     super.dispose();
   }

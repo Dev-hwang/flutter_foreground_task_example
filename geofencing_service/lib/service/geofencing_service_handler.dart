@@ -74,7 +74,7 @@ class GeofencingServiceHandler extends TaskHandler {
       lastLocation: location,
     );
 
-    // Send data to geofencing_service.dart
+    // Send data to main isolate.
     FlutterForegroundTask.sendDataToMain(geofenceState.toJson());
   }
 
@@ -86,7 +86,6 @@ class GeofencingServiceHandler extends TaskHandler {
     _onLocationChanged(location);
 
     // Notifies the user that the geofence status has changed.
-    // flutter_local_notifications or awesome_notifications
   }
 
   void _onGeofenceError(Object error, StackTrace stackTrace) {

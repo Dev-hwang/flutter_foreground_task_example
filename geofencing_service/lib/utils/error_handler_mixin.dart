@@ -14,10 +14,10 @@ mixin ErrorHandlerMixin on BaseController {
       errorMessage = e.toString();
     }
 
-    // print error to console.
+    // Print error to console.
     dev.log('$errorMessage\n${s.toString()}');
 
-    // show error to user.
+    // Show error to user.
     final State? state = this.state;
     if (state != null && state.mounted) {
       final SnackBar snackBar = SnackBar(content: Text(errorMessage));
