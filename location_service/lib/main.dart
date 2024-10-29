@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 
-import 'example_page.dart';
+import 'config/routes.dart';
+import 'service/location_service.dart';
+import 'ui/main_page.dart';
 
 void main() {
-  // Initialize port for communication between TaskHandler and UI.
-  FlutterForegroundTask.initCommunicationPort();
+  LocationService.instance.init();
   runApp(const ExampleApp());
 }
 
@@ -16,9 +16,9 @@ class ExampleApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       routes: {
-        '/': (context) => const ExamplePage(),
+        Routes.main: (_) => const MainPage(),
       },
-      initialRoute: '/',
+      initialRoute: Routes.main,
     );
   }
 }

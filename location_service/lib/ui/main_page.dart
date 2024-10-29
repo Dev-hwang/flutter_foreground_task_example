@@ -1,17 +1,17 @@
 import 'package:fl_location/fl_location.dart';
 import 'package:flutter/material.dart';
 
-import 'example_page_controller.dart';
+import '../controllers/main_page_controller.dart';
 
-class ExamplePage extends StatefulWidget {
-  const ExamplePage({super.key});
+class MainPage extends StatefulWidget {
+  const MainPage({super.key});
 
   @override
-  State<StatefulWidget> createState() => _ExamplePageState();
+  State<StatefulWidget> createState() => _MainPageState();
 }
 
-class _ExamplePageState extends State<ExamplePage> {
-  final ExamplePageController _controller = ExamplePageController();
+class _MainPageState extends State<MainPage> {
+  final MainPageController _controller = MainPageController();
 
   @override
   void initState() {
@@ -22,19 +22,23 @@ class _ExamplePageState extends State<ExamplePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Location Service'),
-        centerTitle: true,
-      ),
-      body: _buildContentView(),
+      appBar: _buildAppBar(),
+      body: _buildContent(),
     );
   }
 
-  Widget _buildContentView() {
+  AppBar _buildAppBar() {
+    return AppBar(
+      title: const Text('Location Service'),
+      centerTitle: true,
+    );
+  }
+
+  Widget _buildContent() {
     return Center(
       child: SingleChildScrollView(
         child: ValueListenableBuilder(
-          valueListenable: _controller.locationNotifier,
+          valueListenable: _controller.locationListenable,
           builder: (BuildContext context, Location? location, _) {
             return _buildResultTable(location);
           },

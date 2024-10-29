@@ -1,21 +1,23 @@
 import 'dart:convert';
-import 'dart:developer' as dev;
 import 'dart:io';
 
 import 'package:fl_location/fl_location.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 
-import 'location_service.dart';
+import 'location_service_handler.dart';
 
-class ExamplePageController {
-  State? _state;
+typedef LocationChanged = void Function(Location location);
 
-  final ValueNotifier<Location?> locationNotifier = ValueNotifier(null);
+class LocationService {
+  LocationService._();
 
-  // private
+  static final LocationService instance = LocationService._();
+
+  // ------------- Service API -------------
   Future<void> _requestPlatformPermissions() async {
+    // Android 13+, you need to allow notification permission to display foreground service notification.
+    //
+    // iOS: If you need notification, ask for permission.
     final NotificationPermission notificationPermission =
         await FlutterForegroundTask.checkNotificationPermission();
     if (notificationPermission != NotificationPermission.granted) {
@@ -23,11 +25,22 @@ class ExamplePageController {
     }
 
     if (Platform.isAndroid) {
+      // Android 12+, there are restrictions on starting a foreground service.
+      //
+      // To restart the service on device reboot or unexpected problem, you need to allow below permission.
       if (!await FlutterForegroundTask.isIgnoringBatteryOptimizations) {
+        // This function requires `android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS` permission.
         await FlutterForegroundTask.requestIgnoreBatteryOptimization();
       }
 
+      // Use this utility only if you provide services that require long-term survival,
+      // such as exact alarm service, healthcare service, or Bluetooth communication.
+      //
+      // This utility requires the "android.permission.SCHEDULE_EXACT_ALARM" permission.
+      // Using this permission may make app distribution difficult due to Google policy.
       if (!await FlutterForegroundTask.canScheduleExactAlarms) {
+        // When you call this function, will be gone to the settings page.
+        // So you need to explain to the user why set it.
         await FlutterForegroundTask.openAlarmsAndRemindersSettings();
       }
     }
@@ -42,11 +55,14 @@ class ExamplePageController {
     }
   }
 
-  Future<void> _initService() async {
+  void init() {
+    FlutterForegroundTask.initCommunicationPort();
+    FlutterForegroundTask.addTaskDataCallback(_onReceiveTaskData);
     FlutterForegroundTask.init(
       androidNotificationOptions: AndroidNotificationOptions(
         channelId: 'location_service',
         channelName: 'Location Service',
+        onlyAlertOnce: true,
       ),
       iosNotificationOptions: const IOSNotificationOptions(
         showNotification: false,
@@ -62,7 +78,10 @@ class ExamplePageController {
     );
   }
 
-  Future<void> _startService() async {
+  Future<void> start() async {
+    await _requestPlatformPermissions();
+    await _requestLocationPermission();
+
     final ServiceRequestResult result =
         await FlutterForegroundTask.startService(
       serviceId: 200,
@@ -77,7 +96,7 @@ class ExamplePageController {
     }
   }
 
-  Future<void> _stopService() async {
+  Future<void> stop() async {
     final ServiceRequestResult result =
         await FlutterForegroundTask.stopService();
 
@@ -87,65 +106,30 @@ class ExamplePageController {
     }
   }
 
+  Future<bool> get isRunningService => FlutterForegroundTask.isRunningService;
+
+  // ------------- Service callback -------------
+  final List<LocationChanged> _callbacks = [];
+
   void _onReceiveTaskData(Object data) {
-    if (data is String) {
-      final Map<String, dynamic> locationJson = jsonDecode(data);
-      final Location location = Location.fromJson(locationJson);
-      locationNotifier.value = location;
+    if (data is! String) {
+      return;
+    }
+
+    final Map<String, dynamic> locationJson = jsonDecode(data);
+    final Location location = Location.fromJson(locationJson);
+    for (final LocationChanged callback in _callbacks.toList()) {
+      callback(location);
     }
   }
 
-  void _handleError(Object e, StackTrace s) {
-    String errorMessage;
-    if (e is PlatformException) {
-      errorMessage = '${e.code}: ${e.message}';
-    } else {
-      errorMessage = e.toString();
-    }
-
-    // print error to console.
-    dev.log('$errorMessage\n${s.toString()}');
-
-    // show error to user.
-    final State? state = _state;
-    if (state != null && state.mounted) {
-      final SnackBar snackBar = SnackBar(content: Text(errorMessage));
-      ScaffoldMessenger.of(state.context).showSnackBar(snackBar);
+  void addLocationChangedCallback(LocationChanged callback) {
+    if (!_callbacks.contains(callback)) {
+      _callbacks.add(callback);
     }
   }
 
-  @mustCallSuper
-  void attach(State state) {
-    _state = state;
-    FlutterForegroundTask.addTaskDataCallback(_onReceiveTaskData);
-
-    try {
-      // check permissions -> if granted -> start service
-      _requestPlatformPermissions().then((_) {
-        _requestLocationPermission().then((_) async {
-          // already started
-          if (await FlutterForegroundTask.isRunningService) {
-            return;
-          }
-
-          await _initService();
-          _startService();
-        });
-      });
-    } catch (e, s) {
-      _handleError(e, s);
-    }
-  }
-
-  @mustCallSuper
-  void detach() {
-    _state = null;
-    FlutterForegroundTask.removeTaskDataCallback(_onReceiveTaskData);
-  }
-
-  @mustCallSuper
-  void dispose() {
-    detach();
-    locationNotifier.dispose();
+  void removeLocationChangedCallback(LocationChanged callback) {
+    _callbacks.remove(callback);
   }
 }
