@@ -3,22 +3,24 @@ import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 
-import 'record_info.dart';
+import '../models/record_file_info.dart';
 
-class RecordPlayerDialog extends StatefulWidget {
-  const RecordPlayerDialog({super.key, required this.recordInfo});
+class RecordFilePlayer extends StatefulWidget {
+  const RecordFilePlayer({super.key, required this.fileInfo});
 
-  final RecordInfo recordInfo;
+  final RecordFileInfo fileInfo;
 
   @override
-  State<StatefulWidget> createState() => _RecordPlayerDialogState();
+  State<StatefulWidget> createState() => _RecordFilePlayerState();
 }
 
-class _RecordPlayerDialogState extends State<RecordPlayerDialog> {
+class _RecordFilePlayerState extends State<RecordFilePlayer> {
   final AudioPlayer _player = AudioPlayer();
 
-  final ValueNotifier<Duration> _duration = ValueNotifier(Duration.zero);
-  final ValueNotifier<Duration> _position = ValueNotifier(Duration.zero);
+  final ValueNotifier<Duration> _durationListenable =
+      ValueNotifier(Duration.zero);
+  final ValueNotifier<Duration> _positionListenable =
+      ValueNotifier(Duration.zero);
 
   StreamSubscription? _durationSubscription;
   StreamSubscription? _positionSubscription;
@@ -30,20 +32,21 @@ class _RecordPlayerDialogState extends State<RecordPlayerDialog> {
       respectSilence: false,
       stayAwake: true,
     ).build();
+
     AudioPlayer.global.setAudioContext(audioContext);
   }
 
-  void _initStreams() {
+  void _subscribeStreams() {
     _durationSubscription = _player.onDurationChanged.listen((duration) {
-      _duration.value = duration;
+      _durationListenable.value = duration;
     });
     _positionSubscription = _player.onPositionChanged.listen((position) {
-      _position.value = position;
+      _positionListenable.value = position;
     });
   }
 
-  void _play() {
-    final Source source = DeviceFileSource(widget.recordInfo.path);
+  void _playRecordFile() {
+    final Source source = DeviceFileSource(widget.fileInfo.path);
     _player.play(source);
   }
 
@@ -51,8 +54,8 @@ class _RecordPlayerDialogState extends State<RecordPlayerDialog> {
   void initState() {
     super.initState();
     _initAudioPlayer();
-    _initStreams();
-    _play();
+    _subscribeStreams();
+    _playRecordFile();
   }
 
   @override
@@ -61,11 +64,11 @@ class _RecordPlayerDialogState extends State<RecordPlayerDialog> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(5.0),
       ),
-      child: _buildContentView(),
+      child: _buildContent(),
     );
   }
 
-  Widget _buildContentView() {
+  Widget _buildContent() {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -79,13 +82,13 @@ class _RecordPlayerDialogState extends State<RecordPlayerDialog> {
 
   Widget _buildSeekBar() {
     return ValueListenableBuilder(
-      valueListenable: _duration,
+      valueListenable: _durationListenable,
       builder: (context, duration, _) {
         return ValueListenableBuilder(
-          valueListenable: _position,
+          valueListenable: _positionListenable,
           builder: (context, position, _) {
-            final int positionMillis = _position.value.inMilliseconds;
-            final int durationMillis = _duration.value.inMilliseconds;
+            final int positionMillis = _positionListenable.value.inMilliseconds;
+            final int durationMillis = _durationListenable.value.inMilliseconds;
             final double value;
             if (positionMillis > 0 && positionMillis < durationMillis) {
               value = positionMillis / durationMillis;
@@ -109,8 +112,8 @@ class _RecordPlayerDialogState extends State<RecordPlayerDialog> {
   void dispose() {
     _durationSubscription?.cancel();
     _positionSubscription?.cancel();
-    _duration.dispose();
-    _position.dispose();
+    _durationListenable.dispose();
+    _positionListenable.dispose();
     _player.dispose();
     super.dispose();
   }

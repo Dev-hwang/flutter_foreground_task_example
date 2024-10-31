@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:path/path.dart' as p;
 
-class RecordInfo {
-  const RecordInfo({
+class RecordFileInfo {
+  const RecordFileInfo({
     required this.name,
     required this.path,
   });
@@ -11,8 +11,8 @@ class RecordInfo {
   final String name;
   final String path;
 
-  factory RecordInfo.fromFileSystemEntity(FileSystemEntity entity) {
-    return RecordInfo(
+  factory RecordFileInfo.fromFileSystemEntity(FileSystemEntity entity) {
+    return RecordFileInfo(
       name: p.basename(entity.path),
       path: entity.path,
     );
