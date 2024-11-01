@@ -49,9 +49,28 @@ class GeofencingService {
   }
 
   Future<void> _requestLocationPermission() async {
-    final LocationPermission locationPermission =
-        await Geofencing.instance.requestLocationPermission();
-    if (locationPermission != LocationPermission.always) {
+    if (!await Geofencing.instance.isLocationServicesEnabled) {
+      throw Exception('Location services is disabled.');
+    }
+
+    LocationPermission permission =
+        await Geofencing.instance.getLocationPermission();
+    if (permission == LocationPermission.denied) {
+      // Android: ACCESS_COARSE_LOCATION or ACCESS_FINE_LOCATION
+      // iOS 12-: NSLocationWhenInUseUsageDescription or NSLocationAlwaysAndWhenInUseUsageDescription
+      // iOS 13+: NSLocationWhenInUseUsageDescription
+      permission = await Geofencing.instance.requestLocationPermission();
+    }
+
+    if (Platform.isAndroid && permission == LocationPermission.whileInUse) {
+      // You need a clear explanation of why your app's feature needs access to background location.
+      // https://developer.android.com/develop/sensors-and-location/location/permissions#request-background-location
+
+      // Android: ACCESS_BACKGROUND_LOCATION
+      permission = await Geofencing.instance.requestLocationPermission();
+    }
+
+    if (permission != LocationPermission.always) {
       throw Exception(
           'To start geofencing service, you must always grant location permission.');
     }

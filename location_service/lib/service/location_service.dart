@@ -47,9 +47,27 @@ class LocationService {
   }
 
   Future<void> _requestLocationPermission() async {
-    final LocationPermission locationPermission =
-        await FlLocation.requestLocationPermission();
-    if (locationPermission != LocationPermission.always) {
+    if (!await FlLocation.isLocationServicesEnabled) {
+      throw Exception('Location services is disabled.');
+    }
+
+    LocationPermission permission = await FlLocation.checkLocationPermission();
+    if (permission == LocationPermission.denied) {
+      // Android: ACCESS_COARSE_LOCATION or ACCESS_FINE_LOCATION
+      // iOS 12-: NSLocationWhenInUseUsageDescription or NSLocationAlwaysAndWhenInUseUsageDescription
+      // iOS 13+: NSLocationWhenInUseUsageDescription
+      permission = await FlLocation.requestLocationPermission();
+    }
+
+    if (Platform.isAndroid && permission == LocationPermission.whileInUse) {
+      // You need a clear explanation of why your app's feature needs access to background location.
+      // https://developer.android.com/develop/sensors-and-location/location/permissions#request-background-location
+
+      // Android: ACCESS_BACKGROUND_LOCATION
+      permission = await FlLocation.requestLocationPermission();
+    }
+
+    if (permission != LocationPermission.always) {
       throw Exception(
           'To start location service, you must always grant location permission.');
     }
