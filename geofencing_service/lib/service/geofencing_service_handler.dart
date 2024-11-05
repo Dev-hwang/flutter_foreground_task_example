@@ -39,9 +39,9 @@ class GeofencingServiceHandler extends TaskHandler {
   @override
   Future<void> onDestroy(DateTime timestamp) async {
     Geofencing.instance
-        .addGeofenceStatusChangedListener(_onGeofenceStatusChanged);
+        .removeGeofenceStatusChangedListener(_onGeofenceStatusChanged);
     Geofencing.instance.removeLocationChangedListener(_onLocationChanged);
-    Geofencing.instance.addGeofenceErrorCallbackListener(_onGeofenceError);
+    Geofencing.instance.removeGeofenceErrorCallbackListener(_onGeofenceError);
     await Geofencing.instance.stop();
   }
 
