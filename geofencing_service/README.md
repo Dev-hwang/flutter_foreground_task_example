@@ -8,8 +8,8 @@ The plugins used in the project are as follows:
 
 ```yaml
 dependencies:
-  flutter_foreground_task: ^8.12.0
-  geofencing_api: ^1.4.0
+  flutter_foreground_task: ^8.13.0
+  geofencing_api: ^1.4.1
 ```
 
 The settings for each platform are as follows:
