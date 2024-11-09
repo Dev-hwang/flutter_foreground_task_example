@@ -32,7 +32,7 @@ dependencies:
     sdk: flutter
 
   flutter_foreground_task: ^8.13.0
-  geofencing_api: ^1.4.1
+  geofencing_api: ^1.4.2
 
 dev_dependencies:
   flutter_test:
