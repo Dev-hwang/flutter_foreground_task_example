@@ -14,7 +14,11 @@ An example of a voice record service implementation using `flutter_foreground_ta
 #### [`geofencing_service`][4]
 An example of a background geofencing service implementation using `flutter_foreground_task` and `geofencing_api`.
 
+#### [`pedometer_service`][5]
+An example of a pedometer service implementation using `flutter_foreground_task` and `pedometer`.
+
 [1]: /internal_plugin_service
 [2]: /location_service
 [3]: /record_service
 [4]: /geofencing_service
+[5]: /pedometer_service
