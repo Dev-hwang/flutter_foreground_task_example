@@ -62,17 +62,22 @@ class GeofencingService {
       permission = await Geofencing.instance.requestLocationPermission();
     }
 
+    if (permission == LocationPermission.denied ||
+        permission == LocationPermission.deniedForever) {
+      throw Exception('Location permission has been ${permission.name}.');
+    }
+
     if (Platform.isAndroid && permission == LocationPermission.whileInUse) {
       // You need a clear explanation of why your app's feature needs access to background location.
       // https://developer.android.com/develop/sensors-and-location/location/permissions#request-background-location
 
       // Android: ACCESS_BACKGROUND_LOCATION
       permission = await Geofencing.instance.requestLocationPermission();
-    }
 
-    if (permission != LocationPermission.always) {
-      throw Exception(
-          'To start geofencing service, you must always grant location permission.');
+      if (permission != LocationPermission.always) {
+        throw Exception(
+            'To start geofencing service, you must always grant location permission.');
+      }
     }
   }
 

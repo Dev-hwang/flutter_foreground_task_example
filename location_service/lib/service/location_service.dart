@@ -59,17 +59,26 @@ class LocationService {
       permission = await FlLocation.requestLocationPermission();
     }
 
+    if (permission == LocationPermission.denied ||
+        permission == LocationPermission.deniedForever) {
+      throw Exception('Location permission has been ${permission.name}.');
+    }
+
+    // Android: You must request location permission one more time to access background location.
+    // iOS 12-: You can request always permission through the above request.
+    // iOS 13+: You can only request whileInUse permission through the above request.
+    // When the app enters the background, a prompt will appear asking for always permission.
     if (Platform.isAndroid && permission == LocationPermission.whileInUse) {
       // You need a clear explanation of why your app's feature needs access to background location.
       // https://developer.android.com/develop/sensors-and-location/location/permissions#request-background-location
 
       // Android: ACCESS_BACKGROUND_LOCATION
       permission = await FlLocation.requestLocationPermission();
-    }
 
-    if (permission != LocationPermission.always) {
-      throw Exception(
-          'To start location service, you must always grant location permission.');
+      if (permission != LocationPermission.always) {
+        throw Exception(
+            'To start location service, you must always grant location permission.');
+      }
     }
   }
 
