@@ -98,9 +98,8 @@ class PedometerService {
       callback: startPedometerService,
     );
 
-    if (!result.success) {
-      throw result.error ??
-          Exception('An error occurred and the service could not be started.');
+    if (result is ServiceRequestFailure) {
+      throw result.error;
     }
   }
 
@@ -108,9 +107,8 @@ class PedometerService {
     final ServiceRequestResult result =
         await FlutterForegroundTask.stopService();
 
-    if (!result.success) {
-      throw result.error ??
-          Exception('An error occurred and the service could not be stopped.');
+    if (result is ServiceRequestFailure) {
+      throw result.error;
     }
   }
 

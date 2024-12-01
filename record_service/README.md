@@ -8,8 +8,13 @@ The plugins used in the project are as follows:
 
 ```yaml
 dependencies:
-  flutter_foreground_task: ^8.13.0
+  intl: ^0.19.0
+  path: ^1.9.0
+  path_provider: ^2.1.4
+  
+  flutter_foreground_task: ^8.16.0
   record: ^5.1.2
+  audioplayers: ^6.0.0
 ```
 
 The settings for each platform are as follows:

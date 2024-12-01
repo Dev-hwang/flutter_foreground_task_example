@@ -117,9 +117,8 @@ class LocationService {
       callback: startLocationService,
     );
 
-    if (!result.success) {
-      throw result.error ??
-          Exception('An error occurred and the service could not be started.');
+    if (result is ServiceRequestFailure) {
+      throw result.error;
     }
   }
 
@@ -127,9 +126,8 @@ class LocationService {
     final ServiceRequestResult result =
         await FlutterForegroundTask.stopService();
 
-    if (!result.success) {
-      throw result.error ??
-          Exception('An error occurred and the service could not be stopped.');
+    if (result is ServiceRequestFailure) {
+      throw result.error;
     }
   }
 

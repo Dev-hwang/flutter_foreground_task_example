@@ -77,10 +77,8 @@ class RecordService {
       callback: startRecordService,
     );
 
-    if (!result.success) {
-      _rollbackRecordStatus();
-      throw result.error ??
-          Exception('An error occurred and the service could not be started.');
+    if (result is ServiceRequestFailure) {
+      throw result.error;
     }
 
     _updateRecordStatus(RecordStatus.started);
@@ -92,10 +90,8 @@ class RecordService {
     final ServiceRequestResult result =
         await FlutterForegroundTask.stopService();
 
-    if (!result.success) {
-      _rollbackRecordStatus();
-      throw result.error ??
-          Exception('An error occurred and the service could not be stopped.');
+    if (result is ServiceRequestFailure) {
+      throw result.error;
     }
 
     _updateRecordStatus(RecordStatus.stopped);
